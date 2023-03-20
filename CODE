@@ -1,0 +1,83 @@
+1. is NewsInterface.kt
+
+here an interface is made to call to network api
+and a retrofit object to handle the api calling.
+
+//also note~~~ > that RIGHT CLICK ON PACKAGE FOLDER --> NEW --> KOTLIN DATA CLASS FROM JSON
+// --> PASTE THE JSON RESULT THAT YOU GET FROM YOUR LINK ON CHROME , AND THAN CLICK ON GENERATE
+// FINALLY YOU WILL GET ALL THE CLASSES REQUIRED
+
+===>dependencies 
+~~~~!! PLZ NOTE THAT LIFE CYCLE- VIEW MODEL 2.5.1 ONLY WILL WORK DONT INCREASE THE VERSION YOU WOULD GET ERROR
+---> OF DUPLICATE CLASS FOUND
+
+ implementation 'com.squareup.retrofit2:retrofit:2.9.0'
+    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+
+
+
+package com.krrishshx.musicwiki.test
+
+import com.krrishshx.musicwiki.testmodel.modelx
+import com.krrishshx.newsx.newss
+import retrofit2.Call
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.http.GET
+import retrofit2.http.Query
+
+const val BASE_URL =  "https://ws.audioscrobbler.com"
+const val API_KEY =  "09db9f968c52208fac594ffcfa47ae00"
+
+interface NewsInterface {
+
+    
+    @GET("/2.0/?method=chart.gettoptags&api_key=$API_KEY&format=json")
+    fun getHeadlines(@Query("page") page:Int) : Call<modelx>
+
+
+//also you can use @Headers
+// @Header("api_key=","09db9f968c52208fac594ffcfa47ae00")
+//to pass parameters in the function means that you are adding & to the url link
+
+
+}
+
+object NewsService{
+    val newsInstance:NewsInterface
+
+    init{
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        newsInstance = retrofit.create(NewsInterface::class.java)
+    }
+}
+
+
+================================================================================
+now go to any activity write this function to get the news body 
+
+ private fun getNews() {
+          val news = NewsService.newsInstance.getHeadlines(1)
+        news.enqueue(object : Callback<modelx>{
+            override fun onFailure(call: Call<modelx>, t: Throwable) {
+             Log.d("debug:","exception")
+            }
+
+            override fun onResponse(call: Call<modelx>, response: Response<modelx>) {
+                val news = response.body()
+
+                if(news != null){
+                    Log.d("debug:",news.toString())
+                }
+
+            }
+        })
+    }
+
+
+
