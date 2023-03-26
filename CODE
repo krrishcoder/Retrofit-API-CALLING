@@ -78,6 +78,26 @@ now go to any activity write this function to get the news body
             }
         })
     }
+    
+    
+    
+    
+    
+    examples----->
+    
+    pexels
+    
+    
+       @Headers("Authorization: your_api_key or auth key ")
+    @GET("curated?")
+    fun getImages(@Query("per_page") per_page:Int) : Call<curated_model>
+    
+    
+    
+    
+    
+    
+    
 
 
 
